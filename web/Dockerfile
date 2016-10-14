@@ -10,12 +10,12 @@ RUN node -v
 RUN npm install --global gulp-cli
 RUN gulp -v
 
-COPY ./app /app
+COPY . /web
 
 # Install all the pip requirements
-RUN pip install -r /app/requirements.txt
+RUN pip install -r /web/app/requirements.txt
 
+
+WORKDIR /web
 RUN npm install
-
-RUN mkdir /logs
 

@@ -6,11 +6,11 @@ web:
     - postgres:postgres
   volumes:
     - './web/app:/app'
-    - './web/logs:/logs'
+    - './web/logs:/web/logs'
   ports:
     - 8000:80
     - 8001:443
-  command: python main.py # Remove this line to use uwsgi
+  command: python /web/app/main.py # Remove this line to use uwsgi
 
 data:
   image: postgres:latest

@@ -14,8 +14,8 @@ def register_assets():
     assets.register(
         'js_all',
         Bundle(
-               './node_modules/jquery/dist/jquery.min.js',
-               './semantic/dist/semantic.min.js',
+               '../node_modules/jquery/dist/jquery.min.js',
+               './node_modules/semantic-ui-css/semantic.min.js',
                './public/js/main.js',
                output='js/packed.js')
     )
@@ -23,7 +23,7 @@ def register_assets():
     assets.register(
         'css_all',
         Bundle(
-            './semantic/dist/semantic.min.css',
+            '../node_modules/semantic-ui-css/semantic.min.css',
             './public/css/style.css',
             output='css/packed.css')
     )
