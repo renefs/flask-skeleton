@@ -1,0 +1,18 @@
+web:
+  restart: always
+  build: ./web
+  env_file: .env
+  links:
+    - postgres:postgres
+  volumes:
+    - './web/app:/app'
+    - './web/logs:/logs'
+  ports:
+    - 8000:80
+    - 8001:443
+  command: python main.py # Remove this line to use uwsgi
+
+postgres:
+    image: 'postgres:9.4'
+    ports:
+      - 5432:5432

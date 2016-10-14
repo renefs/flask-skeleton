@@ -1,3 +1,14 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 *.env
+*node_modules
+*semantic/
+.webassets-cache
+*__pycache__/
+*.pyc
+
+
+*packed.js
+*packed.css
+
+*.log
