@@ -12,7 +12,15 @@ web:
     - 8001:443
   command: python main.py # Remove this line to use uwsgi
 
+data:
+  image: postgres:latest
+  volumes:
+    - /var/lib/postgresql
+  command: "true"
+
 postgres:
     image: 'postgres:9.4'
+    volumes_from:
+      - data
     ports:
       - 5432:5432
