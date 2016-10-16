@@ -5,7 +5,7 @@ web:
   links:
     - postgres:postgres
   volumes:
-    - './web/app:/app'
+    - './web/app:/web/app'
     - './web/logs:/web/logs'
   ports:
     - 8000:80
