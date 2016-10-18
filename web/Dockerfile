@@ -19,3 +19,5 @@ RUN pip install -r /web/app/requirements.txt
 WORKDIR /web
 RUN npm install
 
+WORKDIR /web/app
+
