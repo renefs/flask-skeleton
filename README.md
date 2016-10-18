@@ -47,3 +47,22 @@ Once done the machine can be accesed on the following IP:
 ```
 127.0.0.1:8000
 ```
+
+## Postgres
+
+To connect to the Postgres Database:
+```
+psql -h 127.0.0.1 -p 5432 -U postgres --password
+```
+
+To view the tables
+
+```
+\dt
+```
+
+To create the database:
+
+```
+python main.py --setup
+```

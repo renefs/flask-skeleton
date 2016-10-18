@@ -1,3 +1,4 @@
+from flask.ext.security import SQLAlchemyUserDatastore
 from flask_restful import Api
 from flask_security import Security
 from flask_sqlalchemy import SQLAlchemy
@@ -14,3 +15,7 @@ assets = Environment()
 db = SQLAlchemy()
 # sso = SSO(app=None)
 security = Security()
+# Setup Flask-Security
+from users.models import User, Role
+
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
