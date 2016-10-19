@@ -15,7 +15,7 @@
 {% endwith %}
 {% if current_user.is_authenticated %}
 You are logged in as {{ current_user.username }}!
-<a href="{{ url_for("module_common.logout") }}">Log out</a>
+<a href="{{ url_for("module_users.logout") }}">Log out</a>
 {% else %}
 You are not logged in.
 <a href="{{ url_for("google.login") }}">Log in</a>

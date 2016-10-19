@@ -8,7 +8,7 @@ from flask_login import login_required, logout_user
 from flask_dance.contrib.google import google
 from oauthlib.oauth2 import InvalidGrantError, TokenExpiredError
 
-module_common = Blueprint('module_common', __name__)
+module = Blueprint('module_common', __name__)
 
 
 def token_is_expired():
@@ -19,15 +19,7 @@ def token_is_expired():
         return True
 
 
-@module_common.route("/")
+@module.route("/")
 def index():
     current_app.logger.debug("Index route")
     return render_template('index.html', variable=datetime.datetime.now())
-
-
-@module_common.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    flash("You have logged out")
-    return redirect(url_for("module_common.index"))

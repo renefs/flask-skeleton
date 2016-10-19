@@ -1,6 +1,7 @@
 from logging.handlers import RotatingFileHandler
 from app_factory import create_app
 import argparse
+from config import BaseConfig
 from extensions import db
 
 if __name__ == "__main__":
@@ -9,7 +10,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    app = create_app()
+    app = create_app(BaseConfig)
 
     if args.run_setup:
         with app.app_context():

@@ -1,26 +1,23 @@
 from flask import Flask
 from flask import flash
-from flask.ext.security import SQLAlchemyUserDatastore
 from flask_dance.consumer import oauth_authorized
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 from flask_login import LoginManager, login_user
-from sqlalchemy.orm.exc import NoResultFound
 
 from common.resources.v1 import example_api_v1_bp, API_VERSION_V1
 from extensions import assets, db, security, api, user_datastore
 import static_assets
-from config import BaseConfig
+
 from flask_dance.contrib.google import make_google_blueprint
-from users.models import User, OAuth, Role
 
 from flask_login import (
     current_user
 )
 
 
-def create_app():
+def create_app(config_class):
     app = Flask(__name__)
-    app.config.from_object(BaseConfig)
+    app.config.from_object(config_class)
 
     db.init_app(app=app)
 
@@ -33,12 +30,9 @@ def create_app():
     security.init_app(app=app, datastore=user_datastore)
     api.init_app(app=app)
 
-    from common.views import module_common
-    app.register_blueprint(module_common)
-
-    load_api_module(app)
-
-    load_flask_dance_authorization(app)
+    _load_blueprints(app)
+    _load_api_module(app)
+    _load_flask_dance_authorization(app)
 
     with app.app_context():
         static_assets.register_assets()
@@ -46,14 +40,23 @@ def create_app():
     return app
 
 
-def load_api_module(app):
+def _load_blueprints(app):
+    from common.views import module as module_common
+    app.register_blueprint(module_common)
+
+    from users.views import module as module_users
+    app.register_blueprint(module_users)
+
+
+def _load_api_module(app):
     app.register_blueprint(
         example_api_v1_bp, url_prefix='{prefix}/v{version}'.format(
             prefix=app.config['API_URL_PREFIX'],
             version=API_VERSION_V1))
 
 
-def load_flask_dance_authorization(app):
+def _load_flask_dance_authorization(app):
+    from users.models import User, OAuth
 
     blueprint = make_google_blueprint(
         client_id=app.config['GOOGLE_CLIENT_ID'],
