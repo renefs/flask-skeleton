@@ -1,45 +1,39 @@
 from flask import Flask
 
-from common.resources.v1 import example_api_v1_bp, API_VERSION_V1
-from extensions import assets, db, security, api
-import static_assets
-from config import BaseConfig
-
-from flask_dance.contrib.google import make_google_blueprint, google
+from app.api.v1 import example_api_v1_bp, API_VERSION_V1
+from app.common.google_auth import load_flash_dance_blueprints
+from app.config import BaseConfig
+from app.extensions import db, security, api
+from app.static_assets import register_assets
 
 
 def create_app():
-    app = Flask(__name__)
-    app.config.from_object(BaseConfig)
+    application = Flask(__name__)
+    application.config.from_object(BaseConfig)
 
-    db.init_app(app=app)
-    assets.init_app(app=app)
-    # security.init_app(app=app)
-    api.init_app(app=app)
+    db.init_app(app=application)
+    security.init_app(app=application)
+    api.init_app(app=application)
 
-    from common.views import module_common
-    app.register_blueprint(module_common)
+    _load_application_blueprints(application)
 
-    load_api_module(app)
-    load_flash_dance_blueprints(app)
+    _load_api_module(application)
+    load_flash_dance_blueprints(application)
 
-    with app.app_context():
-        static_assets.register_assets()
+    register_assets(application)
 
-    return app
+    return application
 
 
-def load_flash_dance_blueprints(app):
-    blueprint = make_google_blueprint(
-        client_id=app.config['GOOGLE_CLIENT_ID'],
-        client_secret=app.config['GOOGLE_CLIENT_SECRET'],
-        scope=["profile", "email"]
-    )
-    app.register_blueprint(blueprint, url_prefix="/login")
+def _load_application_blueprints(application):
+    from app.views.common import module_common
+    application.register_blueprint(module_common)
 
 
-def load_api_module(app):
-    app.register_blueprint(
+def _load_api_module(application):
+    application.register_blueprint(
         example_api_v1_bp, url_prefix='{prefix}/v{version}'.format(
-            prefix=app.config['API_URL_PREFIX'],
+            prefix=application.config['API_URL_PREFIX'],
             version=API_VERSION_V1))
+
+

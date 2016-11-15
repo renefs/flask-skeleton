@@ -1,5 +1,5 @@
 from logging.handlers import RotatingFileHandler
-from app_factory import create_app
+from app.app_factory import create_app
 
 
 if __name__ == "__main__":

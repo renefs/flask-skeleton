@@ -2,20 +2,21 @@ FROM tiangolo/uwsgi-nginx-flask:flask-python3.5
 
 # Installing node
 RUN apt-get update
-RUN apt-get install sudo
-RUN curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash - && sudo apt-get install -y nodejs
-RUN node -v
+RUN curl --silent --location https://deb.nodesource.com/setup_4.x | bash -
+RUN apt-get install -y nodejs
 
 # Installing gulp
 RUN npm install --global gulp-cli
-RUN gulp -v
 
-COPY . /web
+WORKDIR /web
+COPY ./package.json /web
+RUN npm install
 
+COPY ./app/requirements.txt /web/app/
 # Install all the pip requirements
 RUN pip install -r /web/app/requirements.txt
 
+COPY ./app /web/app
 
-WORKDIR /web
-RUN npm install
+ENV PYTHONPATH $PYTHONPATH:/web
 

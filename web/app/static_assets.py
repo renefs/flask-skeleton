@@ -1,11 +1,13 @@
 import os
 from webassets import Bundle
+from flask_assets import Environment
 
-from extensions import assets
+# from extensions import assets
 _basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
 
 
-def register_assets():
+def register_assets(app):
+    assets = Environment(app)
 
     assets.load_path = [
         os.path.join(os.path.dirname(__file__))
@@ -27,3 +29,5 @@ def register_assets():
             './public/css/style.css',
             output='css/packed.css')
     )
+
+    return assets
