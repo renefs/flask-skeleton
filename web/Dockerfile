@@ -18,5 +18,9 @@ RUN pip install -r /web/app/requirements.txt
 
 COPY ./app /web/app
 
+EXPOSE 8000
+
 ENV PYTHONPATH $PYTHONPATH:/web
+
+WORKDIR /web/app
 

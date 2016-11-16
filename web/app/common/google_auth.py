@@ -1,3 +1,5 @@
+from flask import flash
+from flask_dance.consumer import oauth_authorized
 from flask_login import (
     LoginManager, current_user,
     login_required, login_user, logout_user
@@ -6,17 +8,19 @@ from flask_login import (
 from flask_dance.contrib.google import make_google_blueprint
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 
-from app.extensions import db
+from app.extensions import db, user_datastore
 from app.models.users import User, OAuth
 
 
-def load_flash_dance_blueprints(application):
+def load_flask_dance_authorization(app):
+
     blueprint = make_google_blueprint(
-        client_id=application.config['GOOGLE_CLIENT_ID'],
-        client_secret=application.config['GOOGLE_CLIENT_SECRET'],
-        scope=["profile", "email"]
+        client_id=app.config['GOOGLE_CLIENT_ID'],
+        client_secret=app.config['GOOGLE_CLIENT_SECRET'],
+        scope=["profile", "email"],
+        offline=True
     )
-    application.register_blueprint(blueprint, url_prefix="/login")
+    app.register_blueprint(blueprint, url_prefix="/login")
 
     # setup login manager
     login_manager = LoginManager()
@@ -28,3 +32,32 @@ def load_flash_dance_blueprints(application):
 
     # setup SQLAlchemy backend
     blueprint.backend = SQLAlchemyBackend(OAuth, db.session, user=current_user)
+
+    # create/login local user on successful OAuth login
+    @oauth_authorized.connect_via(blueprint)
+    def google_logged_in(blueprint, token):
+        if not token:
+            flash("Failed to log in with {name}".format(name=blueprint.name))
+            return
+        # figure out who the user is
+        resp = blueprint.session.get("/plus/v1/people/me")
+        # TODO Extract the position of the account email
+        flash("You are {name}".format(name=resp.json()['emails'][0]['value']))
+        if resp.ok:
+            username = resp.json()['emails'][0]['value']
+            existing_user = user_datastore.find_user(username=username)
+            flash("User already exist")
+            if not existing_user:
+                flash("User does not exist")
+                # create a user
+                existing_user = user_datastore.create_user(username=username)
+                user_datastore.commit()
+            login_user(existing_user)
+            flash("Successfully signed in with Google")
+        else:
+            msg = "Failed to fetch user info from {name}".format(name=blueprint.name)
+            flash(msg, category="error")
+
+    login_manager.init_app(app)
+
+

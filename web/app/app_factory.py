@@ -1,24 +1,28 @@
 from flask import Flask
 
 from app.api.v1 import example_api_v1_bp, API_VERSION_V1
-from app.common.google_auth import load_flash_dance_blueprints
-from app.config import BaseConfig
-from app.extensions import db, security, api
+from app.common.google_auth import load_flask_dance_authorization
+from app.extensions import db, security, api, user_datastore
 from app.static_assets import register_assets
 
 
-def create_app():
+def create_app(config):
     application = Flask(__name__)
-    application.config.from_object(BaseConfig)
+    application.config.from_object(config)
 
     db.init_app(app=application)
-    security.init_app(app=application)
+    security.init_app(app=application, datastore=user_datastore)
     api.init_app(app=application)
 
     _load_application_blueprints(application)
 
     _load_api_module(application)
-    load_flash_dance_blueprints(application)
+
+    @application.before_first_request
+    def setup_database():
+        db.create_all()
+
+    load_flask_dance_authorization(application)
 
     register_assets(application)
 
@@ -26,8 +30,11 @@ def create_app():
 
 
 def _load_application_blueprints(application):
-    from app.views.common import module_common
-    application.register_blueprint(module_common)
+    from app.views.common import common_bp
+    application.register_blueprint(common_bp)
+
+    from app.views.users import module as module_users
+    application.register_blueprint(module_users)
 
 
 def _load_api_module(application):
@@ -35,5 +42,4 @@ def _load_api_module(application):
         example_api_v1_bp, url_prefix='{prefix}/v{version}'.format(
             prefix=application.config['API_URL_PREFIX'],
             version=API_VERSION_V1))
-
 
