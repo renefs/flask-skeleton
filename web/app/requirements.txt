@@ -10,7 +10,6 @@ Flask-Principal==0.4.0
 Flask-RESTful==0.3.5
 Flask-Security==1.7.5
 Flask-SQLAlchemy==2.1
-Flask-SSO==0.4.0
 Flask-Testing
 Flask-WTF==0.13.1
 itsdangerous==0.24
