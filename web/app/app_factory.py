@@ -10,6 +10,8 @@ def create_app(config):
     application = Flask(__name__)
     application.config.from_object(config)
 
+    application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
     db.init_app(app=application)
     security.init_app(app=application, datastore=user_datastore)
     api.init_app(app=application)

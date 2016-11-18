@@ -1,10 +1,7 @@
 import datetime
-from multiprocessing.context import AuthenticationError
 
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template
 from flask import current_app
-from flask import flash
-from flask_login import login_required, logout_user
 from flask_dance.contrib.google import google
 from oauthlib.oauth2 import InvalidGrantError, TokenExpiredError
 
