@@ -5,7 +5,7 @@ from flask import current_app
 from flask_dance.contrib.google import google
 from oauthlib.oauth2 import InvalidGrantError, TokenExpiredError
 
-common_bp = Blueprint('module_common', __name__)
+common_bp = Blueprint('common', __name__)
 
 
 def token_is_expired():
