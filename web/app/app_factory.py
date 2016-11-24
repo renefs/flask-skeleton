@@ -17,15 +17,12 @@ def create_app(config):
     security.init_app(app=application, datastore=user_datastore)
     api.init_app(app=application)
 
-    _load_sample_data(application)
+    if application.config.get('DEBUG', False):
+        _load_sample_data(application)
 
     _load_application_blueprints(application)
 
     _load_api_module(application)
-
-    @application.before_first_request
-    def setup_database():
-        db.create_all()
 
     load_flask_dance_authorization(application)
 
