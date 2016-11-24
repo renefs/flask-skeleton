@@ -4,7 +4,7 @@ from flask import redirect
 from flask import url_for
 from flask_login import login_required, logout_user
 
-module = Blueprint('module_users', __name__)
+module = Blueprint('users', __name__)
 
 
 @module.route("/logout")
@@ -12,4 +12,4 @@ module = Blueprint('module_users', __name__)
 def logout():
     logout_user()
     flash("You have logged out")
-    return redirect(url_for("module_common.index"))
+    return redirect(url_for("common.index"))
