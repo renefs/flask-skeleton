@@ -17,9 +17,6 @@ def create_app(config):
     security.init_app(app=application, datastore=user_datastore)
     api.init_app(app=application)
 
-    if application.config.get('DEBUG', False):
-        _load_sample_data(application)
-
     _load_application_blueprints(application)
 
     _load_api_blueprints(application)
@@ -44,10 +41,3 @@ def _load_api_blueprints(application):
         example_api_v1_bp, url_prefix='{prefix}/v{version}'.format(
             prefix=application.config['API_URL_PREFIX'],
             version=API_VERSION_V1))
-
-
-def _load_sample_data(application):
-    from app.models.initializers import users
-    with application.app_context():
-        users.add_initial_roles_to_database()
-

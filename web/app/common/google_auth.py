@@ -9,12 +9,6 @@ from flask_login import (
     login_user
 )
 
-<<<<<<< HEAD
-from flask_dance.contrib.google import make_google_blueprint
-from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
-
-=======
->>>>>>> 9e0f916b1e264167d2c0dcdf03a929b98d24dc41
 from app.extensions import db
 from app.models import user_datastore
 from app.models.users import User, OAuth
