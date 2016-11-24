@@ -38,6 +38,7 @@ This can be done from Virtualbox: Select the virtual machine -> Settings -> Netw
 | Name | Protoccol | Host IP | Host Port| Guest IP | Guest Port |
 | ---- | --- | --- | --- | --- |--- |
 | Redirect Port 8000 | TCP | 127.0.0.1 | 8000 | | 8000 |
+| Redirect Postgres 5432 | TCP | 127.0.0.1 | 5432 | | 5432 |
 
 
 Once done the machine can be accesed on the following IP:
@@ -49,9 +50,13 @@ Once done the machine can be accesed on the following IP:
 
 ## Postgres
 
-To connect to the Postgres Database:
+To connect to the Postgres Database (password postgres):
 ```
 psql -h 127.0.0.1 -p 5432 -U postgres --password
+```
+
+```
+CREATE DATABASE <name>;
 ```
 
 To view the tables
@@ -60,8 +65,8 @@ To view the tables
 \dt
 ```
 
-To create the database:
+To create the tables:
 
 ```
-python main.py --setup
+docker-compose run web python main.py --setup
 ```
