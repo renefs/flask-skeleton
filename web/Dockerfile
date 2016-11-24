@@ -24,6 +24,7 @@ COPY ./app /web/app
 EXPOSE 8000
 
 ENV PYTHONPATH $PYTHONPATH:/web:/web/libs
+ENV FLASK_APP main:app
 
 WORKDIR /web/app
 

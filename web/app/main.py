@@ -1,16 +1,23 @@
 import argparse
 from logging.handlers import RotatingFileHandler
+
+import click
+
 from app.app_factory import create_app
+from app.cli import initialize_cli
 from app.config import BaseConfig
 from app.extensions import db
+
+app = create_app(BaseConfig)
+
+initialize_cli(app)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run the application')
     parser.add_argument('-s', '--setup', dest='run_setup', action='store_true', help='Sets up database and tables')
 
     args = parser.parse_args()
-
-    app = create_app(BaseConfig)
 
     if args.run_setup:
         with app.app_context():

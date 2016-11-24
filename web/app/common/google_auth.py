@@ -8,7 +8,8 @@ from flask_login import (
 from flask_dance.contrib.google import make_google_blueprint
 from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 
-from app.extensions import db, user_datastore
+from app.extensions import db
+from app.models import user_datastore
 from app.models.users import User, OAuth
 
 
