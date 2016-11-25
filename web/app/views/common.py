@@ -4,6 +4,8 @@ from flask import Blueprint, render_template
 from flask import current_app
 from flask_dance.contrib.google import google
 from oauthlib.oauth2 import InvalidGrantError, TokenExpiredError
+from flask_login import current_user
+
 
 common_bp = Blueprint('common', __name__)
 
@@ -19,4 +21,5 @@ def token_is_expired():
 @common_bp.route("/")
 def index():
     current_app.logger.debug("Index route")
-    return render_template('index.html', variable=datetime.datetime.now())
+    current_app.logger.info("Index route")
+    return render_template('index.html', variable=datetime.datetime.now(), current_user=current_user)

@@ -2,27 +2,25 @@ import uuid
 
 from flask import flash
 from flask_dance.consumer import oauth_authorized
-# from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
-from flask_dance.contrib.google import make_google_blueprint
+from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
+from flask_dance.contrib.facebook import make_facebook_blueprint
 from flask_login import (
     LoginManager, current_user,
     login_user
 )
 
-# from app.extensions import db
-from app.models import User
+from app.extensions import db
 from app.models import user_datastore
-# from app.models.users import User, OAuth
+from app.models.users import User, OAuth
 
 
-def load_google_authentication(app):
-    blueprint = make_google_blueprint(
-        client_id=app.config['GOOGLE_CLIENT_ID'],
-        client_secret=app.config['GOOGLE_CLIENT_SECRET'],
-        scope=["profile", "email"],
-        offline=True
+def load_facebook_authentication(app):
+    blueprint = make_facebook_blueprint(
+        client_id=app.config['FACEBOOK_CLIENT_ID'],
+        client_secret=app.config['FACEBOOK_CLIENT_SECRET'],
+        scope="email"
     )
-    app.register_blueprint(blueprint, url_prefix="/login")
+    app.register_blueprint(blueprint, url_prefix="/login/facebook")
 
     def load_user(user_id):
         """
@@ -38,29 +36,21 @@ def load_google_authentication(app):
             pass
         return user
 
-    # setup login manager
-    # login_manager = LoginManager()
-    # login_manager.login_view = 'google.login'
-    #
-    # @login_manager.user_loader
-    # def load_user(user_id):
-    #     return User.query.get(int(user_id))
-    #
-    # # setup SQLAlchemy backend
-    # blueprint.backend = SQLAlchemyBackend(OAuth, db.session, user=current_user)
-
     # create/login local user on successful OAuth login
     @oauth_authorized.connect_via(blueprint)
-    def google_logged_in(blueprint, token):
+    def facebook_logged_in(blueprint, token):
         if not token:
             flash("Failed to log in with {name}".format(name=blueprint.name))
             return
         # figure out who the user is
-        resp = blueprint.session.get("/plus/v1/people/me")
-        # TODO Extract the position of the account email
-        flash("You are {name}".format(name=resp.json()['emails'][0]['value']))
+        resp = blueprint.session.get("/me?fields=id,name,email")
+        # resp = None
+        app.logger.debug(resp.json())
+        # # TODO Extract the position of the account email
+        flash("You are {name}".format(name=resp.json()['name']))
         if resp.ok:
-            email = resp.json()['emails'][0]['value']
+            # flash(resp)
+            email = resp.json()['email']
             existing_user = user_datastore.find_user(email=email)
             flash("User already exist")
             if not existing_user:
@@ -68,8 +58,10 @@ def load_google_authentication(app):
                 # create a user
                 existing_user = user_datastore.create_user(username=email, email=email, password=str(uuid.uuid4()))
                 user_datastore.commit()
-            login_user(existing_user)
-            flash("Successfully signed in with Google")
+            result = login_user(existing_user)
+            flash(result)
+            flash(current_user.is_authenticated)
+            flash("Successfully signed in with Facebook")
         else:
             msg = "Failed to fetch user info from {name}".format(name=blueprint.name)
             flash(msg, category="error")
@@ -82,8 +74,7 @@ def load_google_authentication(app):
         :param state: state
         """
         blueprint.load_user = load_user
-        state.app.login_manager.blueprint_login_views[blueprint.name] = 'google.login'
+        state.app.login_manager.blueprint_login_views[blueprint.name] = 'facebook.login'
 
     return blueprint
 
-    # login_manager.init_app(app)

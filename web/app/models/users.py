@@ -47,7 +47,7 @@ class User(Base, UserMixin):
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     def __repr__(self):
-        return '<User({}, {}, username={}): {}>'.format(self.id, self.username, self.email, self.active)
+        return '<User({}, {}, username={}): {}>'.format(self.id, self.username, self.email, self.is_authenticated)
 
 
 class OAuth(db.Model, OAuthConsumerMixin):

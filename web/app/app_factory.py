@@ -1,7 +1,7 @@
 from flask import Flask
 
 from app.api.v1 import example_api_v1_bp, API_VERSION_V1
-from app.common.google_auth import load_flask_dance_authorization
+from app.common import load_flask_dance_authorization
 from app.extensions import db, security, api
 from app.models import user_datastore
 from app.static_assets import register_assets
