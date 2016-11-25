@@ -22,19 +22,6 @@ def load_facebook_authentication(app):
     )
     app.register_blueprint(blueprint, url_prefix="/login/facebook")
 
-    def load_user(user_id):
-        """
-        This will be used many times like on using current_user
-        :param user_id: username
-        :return: user or none
-        """
-        user = None
-        try:
-            return User.query.get(int(user_id))
-        except:
-            # https://flask-login.readthedocs.org/en/latest/#how-it-works
-            pass
-        return user
 
     # create/login local user on successful OAuth login
     @oauth_authorized.connect_via(blueprint)
@@ -73,7 +60,6 @@ def load_facebook_authentication(app):
 
         :param state: state
         """
-        blueprint.load_user = load_user
         state.app.login_manager.blueprint_login_views[blueprint.name] = 'facebook.login'
 
     return blueprint

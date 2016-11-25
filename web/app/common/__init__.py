@@ -31,12 +31,7 @@ def load_flask_dance_authorization(app):
         # http://librelist.com/browser/flask/2012/4/7/current-blueprint/#44814417e8289f5f5bb9683d416ee1ee
         blueprint = current_app.blueprints[request.blueprint]
 
-        if hasattr(blueprint, 'load_user'):
-            # return User.query.get(int(user_id))
-            return blueprint.load_user(user_id)
-
-        # https://flask-login.readthedocs.org/en/latest/#how-it-works
-        return None
+        return User.query.get(int(user_id))
 
     # setup SQLAlchemy backend
     facebook_bp.backend = SQLAlchemyBackend(OAuth, db.session, user=current_user)

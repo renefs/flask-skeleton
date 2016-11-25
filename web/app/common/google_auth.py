@@ -24,20 +24,6 @@ def load_google_authentication(app):
     )
     app.register_blueprint(blueprint, url_prefix="/login")
 
-    def load_user(user_id):
-        """
-        This will be used many times like on using current_user
-        :param user_id: username
-        :return: user or none
-        """
-        user = None
-        try:
-            return User.query.get(int(user_id))
-        except:
-            # https://flask-login.readthedocs.org/en/latest/#how-it-works
-            pass
-        return user
-
     # setup login manager
     # login_manager = LoginManager()
     # login_manager.login_view = 'google.login'
@@ -81,7 +67,6 @@ def load_google_authentication(app):
 
         :param state: state
         """
-        blueprint.load_user = load_user
         state.app.login_manager.blueprint_login_views[blueprint.name] = 'google.login'
 
     return blueprint
