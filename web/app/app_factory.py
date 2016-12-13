@@ -12,6 +12,7 @@ def create_app(config):
     application.config.from_object(config)
 
     application.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    application.jinja_env.add_extension('jinja2.ext.do')
 
     db.init_app(app=application)
     security.init_app(app=application, datastore=user_datastore)
@@ -25,7 +26,15 @@ def create_app(config):
 
     register_assets(application)
 
+    _register_global_variables(application)
+
     return application
+
+
+def _register_global_variables(application):
+    @application.context_processor
+    def inject_application_data():
+        return dict(global_app_name=application.config.get('APP_NAME', 'TO DO'))
 
 
 def _load_application_blueprints(application):
@@ -34,6 +43,9 @@ def _load_application_blueprints(application):
 
     from app.views.users import module as module_users
     application.register_blueprint(module_users)
+
+    from app.views.business import module as module_business
+    application.register_blueprint(module_business)
 
 
 def _load_api_blueprints(application):
