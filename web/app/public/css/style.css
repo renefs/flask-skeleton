@@ -1,0 +1,34 @@
+/* LOGIN STYLES */
+
+[data-page="login"] .ui.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  margin: 0 auto;
+  width: 600px;
+}
+
+.dashboard.brand.icon {
+  width: 100%;
+  margin-bottom: 36px;
+}
+
+[data-page="login"] .ui.container .ui.segment {
+  padding: 35px;
+}
+
+p.signup {
+  padding-top: 25px;
+}
+
+p.dashboard {
+  font-size: 12px;
+  padding-top: 10px;
+  text-transform: uppercase;
+}
+
+p.signup, p.dashboard {
+  color: #999999;
+  text-align: center;
+}
