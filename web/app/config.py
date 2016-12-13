@@ -9,6 +9,8 @@ class BaseConfig(object):
     SECRET_KEY = os.environ['SECRET_KEY']
     DEBUG = str2bool(os.environ['DEBUG'])
 
+    APP_NAME = os.environ['APP_NAME']
+
     DB_NAME = os.environ['DB_NAME']
     DB_USER = os.environ['DB_USER']
     DB_PASS = os.environ['DB_PASS']
@@ -27,7 +29,6 @@ class BaseConfig(object):
 
     GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
     GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
-    GOOGLE_CLIENT_SCOPE = os.environ['GOOGLE_CLIENT_SCOPE']
 
     FACEBOOK_CLIENT_ID = os.environ['FACEBOOK_CLIENT_ID']
     FACEBOOK_CLIENT_SECRET = os.environ['FACEBOOK_CLIENT_SECRET']
