@@ -26,6 +26,9 @@ class BaseTestCase(TestCase):
     GOOGLE_CLIENT_SECRET = ""
     GOOGLE_CLIENT_SCOPE = ["profile", "email"]
 
+    FACEBOOK_CLIENT_ID = ""
+    FACEBOOK_CLIENT_SECRET = ""
+
     IS_LOCAL_INSTALLATION = True
 
 
