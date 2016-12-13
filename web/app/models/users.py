@@ -42,7 +42,8 @@ class User(Base, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     active = db.Column(db.Boolean(), default=True)
     confirmed_at = db.Column(db.DateTime())
-    has_auto_generated_password = db.Column(db.Boolean)
+    has_auto_generated_password = db.Column(db.Boolean, default=False)
+    avatar = db.Column(db.String(256))
 
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 

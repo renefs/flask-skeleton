@@ -2,17 +2,12 @@ import uuid
 
 from flask import flash
 from flask_dance.consumer import oauth_authorized
-# from flask_dance.consumer.backend.sqla import SQLAlchemyBackend
 from flask_dance.contrib.google import make_google_blueprint
 from flask_login import (
-    LoginManager, current_user,
     login_user
 )
 
-# from app.extensions import db
-from app.models import User
 from app.models import user_datastore
-# from app.models.users import User, OAuth
 
 
 def load_google_authentication(app):
@@ -24,17 +19,6 @@ def load_google_authentication(app):
     )
     app.register_blueprint(blueprint, url_prefix="/login")
 
-    # setup login manager
-    # login_manager = LoginManager()
-    # login_manager.login_view = 'google.login'
-    #
-    # @login_manager.user_loader
-    # def load_user(user_id):
-    #     return User.query.get(int(user_id))
-    #
-    # # setup SQLAlchemy backend
-    # blueprint.backend = SQLAlchemyBackend(OAuth, db.session, user=current_user)
-
     # create/login local user on successful OAuth login
     @oauth_authorized.connect_via(blueprint)
     def google_logged_in(blueprint, token):
@@ -43,19 +27,21 @@ def load_google_authentication(app):
             return
         # figure out who the user is
         resp = blueprint.session.get("/plus/v1/people/me")
+        # app.logger.debug(resp.json())
         # TODO Extract the position of the account email
-        flash("You are {name}".format(name=resp.json()['emails'][0]['value']))
         if resp.ok:
             email = resp.json()['emails'][0]['value']
+            avatar = resp.json()['image']['url']
             existing_user = user_datastore.find_user(email=email)
-            flash("User already exist")
             if not existing_user:
-                flash("User does not exist")
                 # create a user
                 existing_user = user_datastore.create_user(username=email, email=email, password=str(uuid.uuid4()))
-                user_datastore.commit()
+                existing_user.has_auto_generated_password = True
+
+            existing_user.avatar = avatar
+            user_datastore.commit()
             login_user(existing_user)
-            flash("Successfully signed in with Google")
+            flash("Successfully signed in with Google", 'success')
         else:
             msg = "Failed to fetch user info from {name}".format(name=blueprint.name)
             flash(msg, category="error")
@@ -70,5 +56,3 @@ def load_google_authentication(app):
         state.app.login_manager.blueprint_login_views[blueprint.name] = 'google.login'
 
     return blueprint
-
-    # login_manager.init_app(app)

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block extra_css %}{% endblock %}
+{% block content %}
+
+    <div class="ui container main-header">
+        {% block page_header %}{% endblock %}
+    </div>
+
+    {% include "security/_messages.html" %}
+
+    {% block main_business %}{% endblock %}
+
+{% endblock %}

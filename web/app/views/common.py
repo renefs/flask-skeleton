@@ -1,25 +1,19 @@
-import datetime
 
-from flask import Blueprint, render_template
-from flask import current_app
-from flask_dance.contrib.google import google
-from oauthlib.oauth2 import InvalidGrantError, TokenExpiredError
-from flask_login import current_user
-
+from flask import Blueprint
+from flask import redirect
+from flask import url_for
+from flask_security import current_user, login_required
 
 common_bp = Blueprint('common', __name__)
 
 
-def token_is_expired():
-    try:
-        resp = google.get("/plus/v1/people/me")
-        assert resp.ok, resp.text
-    except (InvalidGrantError, TokenExpiredError) as e:  # or maybe any OAuth2Error
-        return True
-
-
 @common_bp.route("/")
+@login_required
 def index():
-    current_app.logger.debug("Index route")
-    current_app.logger.info("Index route")
-    return render_template('index.html', variable=datetime.datetime.now(), current_user=current_user)
+
+    if current_user.is_authenticated:
+        return redirect(url_for("business.index"))
+    #
+    # current_app.logger.debug("Index route")
+    # current_app.logger.info("Index route")
+    # return render_template('index.html', variable=datetime.datetime.now(), current_user=current_user)
