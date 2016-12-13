@@ -5,6 +5,7 @@ from app.common import load_flask_dance_authorization
 from app.extensions import db, security, api
 from app.models import user_datastore
 from app.static_assets import register_assets
+from flask_migrate import Migrate
 
 
 def create_app(config):
@@ -17,6 +18,11 @@ def create_app(config):
     db.init_app(app=application)
     security.init_app(app=application, datastore=user_datastore)
     api.init_app(app=application)
+
+
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    migrate = Migrate(application, db)
 
     _load_application_blueprints(application)
 
