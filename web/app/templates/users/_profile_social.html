@@ -1,0 +1,16 @@
+{% extends "users/profile.html" %}
+
+{% set active_page = "social" %}
+
+{% block main_profile %}
+    <table class="ui very basic table">
+        <tbody>
+        <tr>
+            {{ show_provider_button('facebook', 'Facebook', facebook_conn) }}
+        </tr>
+        <tr>
+           {{ show_provider_button('google', 'Google', google_conn) }}
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}

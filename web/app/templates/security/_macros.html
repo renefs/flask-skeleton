@@ -1,0 +1,106 @@
+{% macro render_field_with_errors(field, extra_classes="") %}
+    <div class="field">
+        <label for="{{ field.label.field_id }}">{{ field.label }}</label>
+        {{ field(class_=extra_classes, **kwargs)|safe }}
+    </div>
+{% endmacro %}
+
+{% macro render_checkbox_field_with_errors(field, extra_classes="") %}
+    <div class="ui checkbox">
+        {{ field(class_=extra_classes, **kwargs)|safe }}
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {{ field.label }}
+    </div>
+{% endmacro %}
+
+{% macro render_boolean_field_with_errors(field, extra_classses="") %}
+    <div class="form-group {{ extra_classses }}">
+        <div class="togglebutton">
+            <label>
+                {{ field(**kwargs)|safe }} {{ field.label }}
+            </label>
+        </div>
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_textarea_with_errors(field, help_message) %}
+    <div class="form-group label-floating">
+        <label class="control-label"
+               for="{{ field.label.field_id }}">{{ field.label }}</label>
+        {{ field(class_="form-control", rows="3", **kwargs)|safe }}
+        <span class="help-block">{{ help_message }}</span>
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_select_field_with_errors(field) %}
+    <div class="field">
+        <label class="col-md-2 control-label" for="{{ field.label.field_id }}">{{ field.label }}</label>
+        {{ field(class_="ui dropdown", **kwargs)|safe }}
+        {% if field.errors %}
+            <ul>
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_color_field_with_errors(field) %}
+    <div class="field">
+        <div class="ui selection dropdown">
+            <i class="dropdown icon"></i>
+            <input type="hidden" name="{{ field.id }}" value="">
+            <div class="default text">Color</div>
+            <div class="menu">
+                {% for subfield in field %}
+                    <div id="{{ subfield.id }}" class="item" data-value="{{ subfield._value() }}">
+                        <div class="ui {{ subfield.label.text }} empty circular label"></div>
+                        {{ subfield.label.text }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_icon_field_with_errors(field) %}
+    <div class="field">
+        <div class="ui fluid selection dropdown">
+            <i class="dropdown icon"></i>
+            <input type="hidden" name="{{ field.id }}" value="">
+            <div class="default text">Icon</div>
+            <div class="menu">
+                {% for subfield in field %}
+                    <div id="{{ subfield.id }}" class="item" data-value="{{ subfield._value() }}">
+                        <i class="{{ subfield.label.text }} black" aria-hidden="true"></i>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_field(field, extra_classes="") %}
+    <p>{{ field(class_=extra_classes, **kwargs)|safe }}</p>
+{% endmacro %}

@@ -1,0 +1,18 @@
+{%- with messages = get_flashed_messages(with_categories=true) -%}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="row">
+                <div class="sixteen wide column">
+                    <div class="ui {{ category }} message">
+                        <i class="close icon"></i>
+                        <div class="header">
+                            {% if category == "success" %}Success!{% endif %}
+                            {% if category == "warning" %}Warning!{% endif %}
+                            {% if category == "negative" %}Error!{% endif %}</div>
+                        <p>{{ message }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{%- endwith %}
