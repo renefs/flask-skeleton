@@ -1,20 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block title %}Flask Skeleton{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     {% assets "css_all" %}
         <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"/>
     {% endassets %}
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+
+    {% block css %}
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {% endblock %}
+
+    {% block extra_css %}{% endblock %}
+    {% block script %}
+    {% endblock %}
 </head>
 <body>
+{% set navigation_bar = [
+    (url_for('common.index'), 'home', 'Home'),
+] -%}
+{% set right_navigation_bar_not_authenticated = [
+    (url_for('users.register'), 'register', 'Register'),
+    (url_for('security.login'), 'login', 'Login'),
+] -%}
 
-    {% block content %}{% endblock %}
+{% set right_navigation_bar_authenticated = [
+    (url_for('users.profile'), 'profile', 'Profile'),
+    (url_for('security.logout'), 'logout', 'Logout'),
+] -%}
 
-    {% assets "js_all" %}
-        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
+{% set active_page = active_page|default('index') -%}
+
+
+<div class="pusher">
+    <div class="ui grid container">
+
+        <div class="ui main grid">
+            <!-- Responsive top menu -->
+            <div class="ui inverted main menu">
+                <div class="ui container">
+                    <a class="launch icon item sidebar-toggle">
+                        <i class="sidebar icon"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="column large screen only row">
+                <div class="ui mobile only top fixed menu">
+                    <div class="right menu">
+                        {% for href, icon, id in right_navigation_bar_authenticated %}
+                            <a class="item {% if id == main_page %}active{% endif %}"
+                               href="{{ href|e }}">
+                            {% if icon == "profile" %}
+                                <img class="ui avatar image" src="{{ current_user.avatar }}" />
+                            {% endif %}
+                            {{ id|safe }}
+                            </a>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+
+            {% block content %}{% endblock %}
+
+        </div>
+    </div>
+</div>
+
+{% assets "js_all" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+
+{% block extra_javascripts %}
+
+{% endblock %}
+
+
 </body>
 </html>
